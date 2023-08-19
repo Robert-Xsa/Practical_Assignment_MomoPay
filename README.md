@@ -6,6 +6,6 @@ To run the codes of this repository follow the following steps;
 -  Runserver by the following command; python manage.py runserver
 -  When the server is running, open browser and enter; http://127.0.0.1:8000/
 -  To login to the admin dashboard enter; http://127.0.0.1:8000/admin/
--  To simulate printing of the invoice run the following command; python manage.py generate_invoices
+-  To simulate printing of the invoice run the following command; python manage.py generate_invoices. 
 Ensure that the server is stopped when simulating the printing of the invoice generated.
 Python script that generates invoices based on completed purchase orders is found in the file which located inside the; medicine_managements\purchases\management\commands
