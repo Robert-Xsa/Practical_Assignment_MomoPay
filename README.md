@@ -1,5 +1,5 @@
 To run the codes of this repository follow the following steps;
--Install python in your computer
+-  Install python in your computer
 -Create a folder on your local computer and inside it create a virtual environment by runing the following command; python -m venv myenv
 -Activate your virtual environment by running; myenv\Scripts\activate
 -Install the dependencies listed in a requirements.txt file by running the following command; pip install -r requirements.txt
