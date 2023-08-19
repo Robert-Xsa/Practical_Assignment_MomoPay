@@ -11,6 +11,9 @@ class Customer(models.Model):
 
     class Meta:
         db_table = 'customers'
+        
+    def __str__(self):
+        return self.NAME
     
 class Invoice(models.Model):
     INVOICE_ID = models.AutoField(primary_key=True)
@@ -19,9 +22,13 @@ class Invoice(models.Model):
     CUSTOMER_ID = models.IntegerField()
     TOTAL_AMOUNT = models.FloatField()
     TOTAL_DISCOUNT = models.FloatField()
+    
 
     class Meta:
         db_table = 'invoices'
+        
+    def __str__(self):
+        return self.INVOICE_ID
         
 class Medicine(models.Model):
     ID = models.AutoField(primary_key=True)
@@ -33,6 +40,9 @@ class Medicine(models.Model):
     class Meta:
         db_table = 'medicines'
         
+    def __str__(self):
+        return self.NAME
+    
 class MedicineStock(models.Model):
     ID = models.AutoField(primary_key=True)
     NAME = models.CharField(max_length=100)
@@ -45,16 +55,30 @@ class MedicineStock(models.Model):
     class Meta:
         db_table = 'medicines_stock'
         
+    def __str__(self):
+        return self.NAME
+        
 class Purchase(models.Model):
     VOUCHER_NUMBER = models.AutoField(primary_key=True)
+    medicines = models.ManyToManyField(MedicineStock)
     SUPPLIER_NAME = models.CharField(max_length=100)
     INVOICE_NUMBER = models.IntegerField()
     PURCHASE_DATE = models.CharField(max_length=10)
     TOTAL_AMOUNT = models.FloatField()
     PAYMENT_STATUS = models.CharField(max_length=20)
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        for medicine_stock in self.medicines.all():
+            medicine_stock.QUANTITY += 1  # Update quantity, adjust as needed
+            medicine_stock.save()
+    
 
     class Meta:
         db_table = 'purchases'
+        
+    def __str__(self):
+        return self.PAYMENT_STATUS
         
 class Supplier(models.Model):
     ID = models.AutoField(primary_key=True)
@@ -66,4 +90,6 @@ class Supplier(models.Model):
     class Meta:
         db_table = 'suppliers'
         
+    def __str__(self):
+        return self.NAME
 
