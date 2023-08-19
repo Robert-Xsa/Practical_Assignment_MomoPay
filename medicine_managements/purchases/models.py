@@ -59,9 +59,7 @@ class Invoice(models.Model):
    
     def __str__(self):
         return f"Invoice ID: {self.INVOICE_ID}, Customer: {self.CUSTOMER_ID}, Amount: {self.TOTAL_AMOUNT}"
-    
-
-    
+        
 class MedicineStock(models.Model):
     ID = models.AutoField(primary_key=True)
     Medicine = models.ForeignKey(Medicine, on_delete=models.CASCADE, verbose_name="MEDICINE NAME")
@@ -78,8 +76,6 @@ class MedicineStock(models.Model):
     def __str__(self):
         return self.NAME
     
-    
-
         
 class Purchase(models.Model):
     VOUCHER_NUMBER = models.AutoField(primary_key=True)
@@ -98,10 +94,9 @@ class Purchase(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         for medicine_stock in self.medicines.all():
-            medicine_stock.QUANTITY += 1  # Update quantity, adjust as needed
+            medicine_stock.QUANTITY += 1  # Update quantity,
             medicine_stock.save()
     
-
     class Meta:
         db_table = 'purchases'
 
