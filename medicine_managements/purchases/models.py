@@ -27,9 +27,10 @@ class Invoice(models.Model):
     class Meta:
         db_table = 'invoices'
         
+   
     def __str__(self):
-        return self.INVOICE_ID
-        
+        return f"Invoice ID: {self.INVOICE_ID}, Customer: {self.CUSTOMER_ID}, Amount: {self.TOTAL_AMOUNT}"
+    
 class Medicine(models.Model):
     ID = models.AutoField(primary_key=True)
     NAME = models.CharField(max_length=100)
@@ -57,15 +58,35 @@ class MedicineStock(models.Model):
         
     def __str__(self):
         return self.NAME
+    
+    
+class Supplier(models.Model):
+    ID = models.AutoField(primary_key=True)
+    NAME = models.CharField(max_length=100)
+    EMAIL = models.EmailField()
+    CONTACT_NUMBER = models.CharField(max_length=10)
+    ADDRESS = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'suppliers'
+        
+    def __str__(self):
+        return self.NAME
+
+
         
 class Purchase(models.Model):
     VOUCHER_NUMBER = models.AutoField(primary_key=True)
     medicines = models.ManyToManyField(MedicineStock)
-    SUPPLIER_NAME = models.CharField(max_length=100)
+    Supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, verbose_name="SUPPLIER NAME")
     INVOICE_NUMBER = models.IntegerField()
-    PURCHASE_DATE = models.CharField(max_length=10)
+    PURCHASE_DATE = models.DateField()
     TOTAL_AMOUNT = models.FloatField()
-    PAYMENT_STATUS = models.CharField(max_length=20)
+    selection_1 = (
+        ("C", "Completed"),
+        ("N", "Not Completed"),  
+    )
+    PAYMENT_STATUS = models.CharField(max_length=20, choices = selection_1 )
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -76,20 +97,7 @@ class Purchase(models.Model):
 
     class Meta:
         db_table = 'purchases'
-        
+
     def __str__(self):
         return self.PAYMENT_STATUS
         
-class Supplier(models.Model):
-    ID = models.AutoField(primary_key=True)
-    NAME = models.CharField(max_length=100)
-    EMAIL = models.CharField(max_length=100)
-    CONTACT_NUMBER = models.CharField(max_length=10)
-    ADDRESS = models.CharField(max_length=100)
-
-    class Meta:
-        db_table = 'suppliers'
-        
-    def __str__(self):
-        return self.NAME
-
