@@ -1,8 +1,37 @@
 from django.db import models
 
 # Create your models here.
+class Medicine(models.Model):
+    ID = models.AutoField(primary_key=True)
+    NAME = models.CharField(max_length=100)
+    PACKING = models.CharField(max_length=20)
+    GENERIC_NAME = models.CharField(max_length=100)
+    SUPPLIER_NAME = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'medicines'
+        
+    def __str__(self):
+        return self.NAME
+    
+class Supplier(models.Model):
+    ID = models.AutoField(primary_key=True)
+    Medicine = models.ForeignKey(Medicine, on_delete=models.CASCADE, verbose_name="MEDICINE NAME")
+    NAME = models.CharField(max_length=100)
+    EMAIL = models.EmailField()
+    CONTACT_NUMBER = models.CharField(max_length=10)
+    ADDRESS = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'suppliers'
+        
+    def __str__(self):
+        return self.NAME
+
+
 class Customer(models.Model):
     ID = models.AutoField(primary_key=True)
+    Supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, verbose_name="SUPPLIER NAME")
     NAME = models.CharField(max_length=20)
     CONTACT_NUMBER = models.CharField(max_length=10)
     ADDRESS = models.CharField(max_length=100)
@@ -31,24 +60,14 @@ class Invoice(models.Model):
     def __str__(self):
         return f"Invoice ID: {self.INVOICE_ID}, Customer: {self.CUSTOMER_ID}, Amount: {self.TOTAL_AMOUNT}"
     
-class Medicine(models.Model):
-    ID = models.AutoField(primary_key=True)
-    NAME = models.CharField(max_length=100)
-    PACKING = models.CharField(max_length=20)
-    GENERIC_NAME = models.CharField(max_length=100)
-    SUPPLIER_NAME = models.CharField(max_length=100)
 
-    class Meta:
-        db_table = 'medicines'
-        
-    def __str__(self):
-        return self.NAME
     
 class MedicineStock(models.Model):
     ID = models.AutoField(primary_key=True)
+    Medicine = models.ForeignKey(Medicine, on_delete=models.CASCADE, verbose_name="MEDICINE NAME")
     NAME = models.CharField(max_length=100)
     BATCH_ID = models.CharField(max_length=20, unique = True)
-    EXPIRY_DATE = models.CharField(max_length=10)
+    EXPIRY_DATE = models.DateField()
     QUANTITY = models.IntegerField()
     MRP = models.FloatField()
     RATE = models.FloatField()
@@ -60,25 +79,13 @@ class MedicineStock(models.Model):
         return self.NAME
     
     
-class Supplier(models.Model):
-    ID = models.AutoField(primary_key=True)
-    NAME = models.CharField(max_length=100)
-    EMAIL = models.EmailField()
-    CONTACT_NUMBER = models.CharField(max_length=10)
-    ADDRESS = models.CharField(max_length=100)
-
-    class Meta:
-        db_table = 'suppliers'
-        
-    def __str__(self):
-        return self.NAME
-
 
         
 class Purchase(models.Model):
     VOUCHER_NUMBER = models.AutoField(primary_key=True)
     medicines = models.ManyToManyField(MedicineStock)
     Supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, verbose_name="SUPPLIER NAME")
+    Customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name="CUSTOMER NAME")
     INVOICE_NUMBER = models.IntegerField()
     PURCHASE_DATE = models.DateField()
     TOTAL_AMOUNT = models.FloatField()
